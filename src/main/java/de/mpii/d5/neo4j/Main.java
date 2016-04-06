@@ -3,6 +3,7 @@ package main.java.de.mpii.d5.neo4j;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +43,7 @@ public class Main {
       config.put("neostore.propertystore.db.arrays.mapped_memory", "0M");
       config.put("neostore.propertystore.db.index.keys.mapped_memory", "1g");
       config.put("neostore.propertystore.db.index.mapped_memory", "10g");
-      db = BatchInserters.inserter(databaseDir, config);
+      db = BatchInserters.inserter(new File(databaseDir), config);
       Neo4jBatchHandler handler = new Neo4jBatchHandler(db);
       handler.createNeo4jDb(freebasePath, numberOfTriples);
     } catch (Exception e) {
