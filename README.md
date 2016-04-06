@@ -5,6 +5,7 @@
             https://github.com/percyliang/sempre
 
 It is a canonicalized and scaled down dump. It's format like **freebase/data/tutorial.ttl** in sempre project.
+You must remove all the blank lines in triple tuple file.
 
 ## Easy setup
 
