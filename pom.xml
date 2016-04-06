@@ -8,6 +8,19 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <!--公司内部仓库-->
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <name>Public Nexus Repository</name>
+            <url>http://192.168.100.62:8081/nexus/content/groups/public</url>
+        </repository>
+    </repositories>
+
     <build>
         <sourceDirectory>src</sourceDirectory>
         <plugins>
@@ -43,12 +56,7 @@
         </plugins>
     </build>
 
-    <name>neo4j</name>
-    <url>http://maven.apache.org</url>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencies>
         <dependency>

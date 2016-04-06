@@ -31,7 +31,7 @@ public class Main {
 
     try {
       // set these configuration based on the size of your data
-      Map<String, String> config = new HashMap<String, String>();
+      Map<String, String> config = new HashMap<>();
       config.put("dbms.pagecache.memory", "70G");
       config.put("cache_type", "none");
       config.put("use_memory_mapped_buffers", "true");
