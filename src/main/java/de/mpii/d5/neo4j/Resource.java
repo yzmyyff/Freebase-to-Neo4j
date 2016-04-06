@@ -6,8 +6,8 @@ import java.util.regex.Pattern;
 /**
  * A resource could be a subject, predicate, or an object.
  * An object could be an entity or a literal value
- * @author ajabal
  *
+ * @author Kuang.Ru
  */
 public class Resource {
   // non-string literal e.g., int, double and boolean
@@ -21,14 +21,15 @@ public class Resource {
   public Resource(String value) {
     this.value = value;
   }
-  
+
   public String getValue() {
     return value;
   }
-  
+
   public void setValue(String value) {
     this.value = value;
   }
+
   /**
    * split value into prefix and id
    */
@@ -39,18 +40,19 @@ public class Resource {
       this.id = this.getValue().substring(endIndex + 1, this.getValue().length());
     }
   }
+
   /**
    * check whether a resource is literal
+   *
    * @return boolean
    */
   public boolean isLiteral() {
-    if (this.getValue().startsWith("\"")) {
-      return true;
-    }
-    return false;
+    return this.getValue().startsWith("\"");
   }
+
   /**
    * get value out of literal resource
+   *
    * @return the value of literal resource
    */
   public String handleLiteral() {
@@ -68,11 +70,11 @@ public class Resource {
     val = val.replace("\\u", "\\\\u");
     return val;
   }
-  
+
   public String getId() {
     return id;
   }
-  
+
   public String getPrefix() {
     return prefix;
   }

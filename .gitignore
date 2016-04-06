@@ -19,3 +19,6 @@ hs_err_pid*
 *.bbl
 *.blg
 *.log
+
+# IDE file
+.idea

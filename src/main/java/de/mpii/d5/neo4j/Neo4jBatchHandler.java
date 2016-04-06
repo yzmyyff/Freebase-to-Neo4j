@@ -20,7 +20,7 @@ import java.util.Map;
  * Each node has two properties: __MID__, __PREFIX__.
  * Literal objects are stored as properties of the subject
  *
- * @author Abdalghani Abujabal - abujabal@mpi-inf.mpg.de
+ * @author Kuang.Ru
  * @version 1.0
  */
 public class Neo4jBatchHandler {
@@ -44,13 +44,67 @@ public class Neo4jBatchHandler {
   }
 
   /**
+   * 处理每行数据, 然后把内容加入到图数据库.
+   *
+   * @param line 三元组构成的行.
+   */
+  private void handleLine(String line) {
+    String[] fields = line.split("\t");
+    boolean literalObject = false;
+
+    // 构造主体
+    String subjectStr = fields[0];
+    Resource subjectResource = new Resource(subjectStr);
+    subjectResource.setValues();
+
+    // 构造客体
+    String objectStr = fields[2].trim();
+    objectStr = objectStr.substring(0, objectStr.length() - 1).trim(); // at the end of each object there is dot
+    Resource objectResource = new Resource(objectStr);
+    String val = "";
+
+    if (!objectResource.isLiteral()) {
+      // entity, example: fb:m.0n7x41f
+      objectResource.setValues();
+    } else {
+      // literal
+      literalObject = true;
+      val = objectResource.handleLiteral();
+    }
+
+    // predicate resource
+    String predicateStr = fields[1];
+    Resource predicateResource = new Resource(predicateStr);
+    predicateResource.setValues();
+
+    // Check subject node existence
+    Long subjectNodeId = tmpIndex.get(subjectResource.getId());
+
+    if (subjectNodeId == null) {
+      subjectNodeId = this.createNeo4jNode(subjectResource);
+    }
+
+    if (literalObject) {
+      this.insertLiteralValueAsProp(subjectNodeId, predicateResource, val);
+    } else {
+      // Check object node existence
+      Long objectNodeId = tmpIndex.get(objectResource.getId());
+      if (objectNodeId == null) {
+        objectNodeId = this.createNeo4jNode(objectResource);
+      }
+      // create relation between subject and object nodes
+      createNeo4jRelation(predicateResource, subjectNodeId, objectNodeId);
+    }
+  }
+
+  /**
    * create noe4j database
    *
    * @param path            Freebase triples path
    * @param numberOfTriples number of Freebase triples to read
    */
   public void createNeo4jDb(String path, int numberOfTriples) {
-    String line = "";
+    String line;
 
     try {
       int count = 0;
@@ -62,55 +116,13 @@ public class Neo4jBatchHandler {
 
       while (line != null) {
         count++;
-        boolean literalObject = false;
-        String[] fields = line.split("\t");
-
-        // subject resource
-        String subjectStr = fields[0];
-        Resource subjectResource = new Resource(subjectStr);
-        subjectResource.setValues();
-
-        // object resource
-        String objectStr = fields[2].trim();
-        // at the end of each object there is dot
-        objectStr = objectStr.substring(0, objectStr.length() - 1);
-
-        Resource objectResource = new Resource(objectStr);
-        String val = "";
-        if (!objectResource.isLiteral()) {
-          // entity, example: fb:m.0n7x41f
-          objectResource.setValues();
-        } else {
-          // literal
-          literalObject = true;
-          val = objectResource.handleLiteral();
-        }
-
-        // predicate resource
-        String predicateStr = fields[1];
-        Resource predicateResource = new Resource(predicateStr);
-        predicateResource.setValues();
-
-        // Check subject node existence
-        Long subjectNodeId = tmpIndex.get(subjectResource.getId());
-        if (subjectNodeId == null) {
-          subjectNodeId = this.createNeo4jNode(subjectResource);
-        }
-        if (literalObject) {
-          this.insertLiteralValueAsProp(subjectNodeId, predicateResource, val);
-        } else {
-          // Check object node existence
-          Long objectNodeId = tmpIndex.get(objectResource.getId());
-          if (objectNodeId == null) {
-            objectNodeId = this.createNeo4jNode(objectResource);
-          }
-          // create relation between subject and object nodes
-          createNeo4jRelation(predicateResource, subjectNodeId, objectNodeId);
-        }
+        handleLine(line);
         totalTriples++;
+
         if (totalTriples == numberOfTriples) {
           break;
         }
+
         // print every 10M triples
         if (count == 10000000) {
           millions += 10;
@@ -120,13 +132,22 @@ public class Neo4jBatchHandler {
 
         line = br.readLine();
       }
+
       br.close();
-      System.out.println("totalTriples = " + totalTriples + " : "
-          + "addedRelationships = " + addedRelationships + " : "
-          + "addedNodes = " + addedNodes);
+      System.out.println(getStatistics());
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * 获取全部过程的统计数据.
+   *
+   * @return 统计数据的字符串形式.
+   */
+  private String getStatistics() {
+    return "totalTriples = " + totalTriples + " : " + "addedRelationships = " + addedRelationships
+        + " : " + "addedNodes = " + addedNodes;
   }
 
   /**
@@ -139,7 +160,7 @@ public class Neo4jBatchHandler {
   private void insertLiteralValueAsProp(Long subId, Resource r, String val) {
     Map<String, Object> nodeProps = propsMap.get(subId);
     if (nodeProps == null) {
-      nodeProps = new HashMap<String, Object>();
+      nodeProps = new HashMap<>();
       propsMap.put(subId, nodeProps);
     }
     nodeProps.put(r.getId(), val);
