@@ -21,4 +21,4 @@ hs_err_pid*
 *.log
 
 # IDE环境文件
-.idea/*
+.idea
