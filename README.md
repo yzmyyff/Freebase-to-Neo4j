@@ -10,7 +10,7 @@ It is a canonicalized and scaled down dump. It's format like **freebase/data/tut
 
 1. Clone the GitHub repository:
 
-            git clone https://github.com/abujabal/Freebase-to-Neo4j
+            git clone https://github.com/yzmyyff/Freebase-to-Neo4j.git
 
 2. Compile the source code (this produces `target/neo4j-0.0.1-SNAPSHOT-jar-with-dependencies.jar`):
 
