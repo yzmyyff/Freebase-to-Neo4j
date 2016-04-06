@@ -4,7 +4,7 @@
 ## Freebase dump used is based on: 
             https://github.com/percyliang/sempre
 
-It is a canonicalized and scaled down dump
+It is a canonicalized and scaled down dump. It's format like **freebase/data/tutorial.ttl** in sempre project.
 
 ## Easy setup
 
