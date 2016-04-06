@@ -1,11 +1,10 @@
 
-# Freebase to Neo4j Graph Database Loader
+# Freebase to Neo4j(Version 2.3.3) Graph Database Loader
 
 ## Freebase dump used is based on: 
             https://github.com/percyliang/sempre
 
-It is a canonicalized and scaled down dump. It's format like **freebase/data/tutorial.ttl** in sempre project.
-You must remove all the blank lines in triple tuple file.
+It is a canonicalized and scaled down dump. It's format like **freebase/data/tutorial.ttl** in sempre project. You must remove all the blank lines in triple tuple file.
 
 ## Easy setup
 
