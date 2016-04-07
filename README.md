@@ -6,6 +6,12 @@
 
 It is a canonicalized and scaled down dump. It's format like **freebase/data/tutorial.ttl** in sempre project. You must remove all the blank lines in triple tuple file.
 
+### Acquire Full Freebase ttl
+
+```shell
+    ./pull-dependencies fullfreebase-ttl
+```
+            
 ## Easy setup
 
 1. Clone the GitHub repository:
