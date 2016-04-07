@@ -33,11 +33,11 @@ public class Neo4jBatchHandler {
   // property for each noe4j node which stores preceding prefix of a resource
   private static final String PREFIX_PROPERTY = "__PREFIX__";
   // <resource id, node id>: to keep track of inserted nodes
-  private Map<String, Long> tmpIndex = new HashMap<String, Long>();
+  private Map<String, Long> tmpIndex = new HashMap<>();
   // <node id, labels>: to keep track of node's labels
-  private Map<Long, HashSet<Label>> labelsMap = new HashMap<Long, HashSet<Label>>();
+  private Map<Long, HashSet<Label>> labelsMap = new HashMap<>();
   // <node id, properties>: to keep track of node's properties
-  private Map<Long, Map<String, Object>> propsMap = new HashMap<Long, Map<String, Object>>();
+  private Map<Long, Map<String, Object>> propsMap = new HashMap<>();
 
   public Neo4jBatchHandler(BatchInserter db) {
     this.db = db;
@@ -47,8 +47,9 @@ public class Neo4jBatchHandler {
    * 处理每行数据, 然后把内容加入到图数据库.
    *
    * @param line 三元组构成的行.
+   * @throws ArrayIndexOutOfBoundsException 一般在行无法构成三元组是产生.
    */
-  private void handleLine(String line) {
+  private void handleLine(String line) throws ArrayIndexOutOfBoundsException {
     String[] fields = line.split("\t");
     boolean literalObject = false;
 
@@ -116,7 +117,12 @@ public class Neo4jBatchHandler {
 
       while (line != null) {
         count++;
-        handleLine(line);
+        try {
+          handleLine(line);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+          System.out.println(count + ":" + line);
+        }
+
         totalTriples++;
 
         if (totalTriples == numberOfTriples) {
