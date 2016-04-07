@@ -8,8 +8,8 @@ It is a canonicalized and scaled down dump. It's format like **freebase/data/tut
 
 ### Acquire Full Freebase ttl
 
-```shell
-    ./pull-dependencies fullfreebase-ttl
+```Shell
+        ./pull-dependencies fullfreebase-ttl
 ```
             
 ## Easy setup
@@ -23,4 +23,3 @@ It is a canonicalized and scaled down dump. It's format like **freebase/data/tut
             mvn package
 
 3. Run code by invoking the Main class and passing the path to Freebase dump as well as a directory to store Neo4j db
-            
