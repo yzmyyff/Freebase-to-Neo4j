@@ -162,10 +162,12 @@ public class Neo4jBatchHandler {
    */
   private void insertLiteralValueAsProp(Long subId, Resource r, String val) {
     Map<String, Object> nodeProps = propsMap.get(subId);
+
     if (nodeProps == null) {
       nodeProps = new HashMap<>();
       propsMap.put(subId, nodeProps);
     }
+
     nodeProps.put(r.getId(), val);
     db.setNodeProperties(subId, nodeProps);
   }
