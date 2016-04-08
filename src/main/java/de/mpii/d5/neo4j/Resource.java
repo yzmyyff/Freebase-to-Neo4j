@@ -59,6 +59,7 @@ public class Resource {
     String val = "";
     Matcher m = NON_STRING_LIT.matcher(this.getValue());
     Matcher m2 = STRING_LIT.matcher(this.getValue());
+
     if (m.matches()) {
       // int, double, boolean, or datetime, example: "true"^^xsd:boolean
       val = m.group(1);
@@ -66,8 +67,8 @@ public class Resource {
       // string, example: "abdalghani"@en
       val = m2.group(1);
     }
-    // insert escape chars
-    val = val.replace("\\u", "\\\\u");
+
+    val = val.replace("\\u", "\\\\u"); // insert escape chars
     return val;
   }
 

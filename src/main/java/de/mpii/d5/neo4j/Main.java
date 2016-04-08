@@ -16,8 +16,8 @@ public class Main {
    */
   public static void main(String[] args) {
     if (args.length < 2) {
-      System.err.println("Usage: de.mpii.d5.neo4j.Main freebasePath "
-          + "noe4jDatabaseDir [#triples]");
+      System.err.println("Usage: 缺少参数: Freebase三元组文件路径.");
+      return;
     }
 
     String freebasePath = args[0];
@@ -32,16 +32,14 @@ public class Main {
 
     // set these configuration based on the size of your data
     Map<String, String> config = new HashMap<>();
-    config.put("dbms.pagecache.memory", "70G");
-    config.put("cache_type", "none");
-    config.put("use_memory_mapped_buffers", "true");
-    config.put("neostore.nodestore.db.mapped_memory", "10g");
-    config.put("neostore.relationshipstore.db.mapped_memory", "10g");
-    config.put("neostore.propertystore.db.mapped_memory", "5g");
-    config.put("neostore.propertystore.db.strings.mapped_memory", "1g");
-    config.put("neostore.propertystore.db.arrays.mapped_memory", "0M");
-    config.put("neostore.propertystore.db.index.keys.mapped_memory", "1g");
-    config.put("neostore.propertystore.db.index.mapped_memory", "10g");
+
+    // neo4j的页面缓存. 需要和本机条件相关.
+    // bytes_needed = number_of_nodes * 15
+    //                + number_of_relationships * 34
+    //                + number_of_properties * 64
+    // 按照估计公式 bytes_ needed = 46000000  * 15 + 595779207 * 34 + 46000000 * 64 = 23890493038 byte
+    // ≈ 22.25 GiB
+    config.put("dbms.pagecache.memory", "25g");
 
     try {
       db = BatchInserters.inserter(new File(databaseDir), config);
