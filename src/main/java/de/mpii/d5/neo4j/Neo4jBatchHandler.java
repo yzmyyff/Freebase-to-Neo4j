@@ -2,7 +2,6 @@ package main.java.de.mpii.d5.neo4j;
 
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
-import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 
@@ -10,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -24,18 +22,17 @@ import java.util.Map;
  * @version 1.0
  */
 public class Neo4jBatchHandler {
-  private int totalTriples = 0;
-  private int addedNodes = 0;
-  private int addedRelationships = 0;
-  private BatchInserter db;
   // property for each neo4j node which stores resource's id
   private static final String MID_PROPERTY = "__MID__";
   // property for each noe4j node which stores preceding prefix of a resource
   private static final String PREFIX_PROPERTY = "__PREFIX__";
+
+  private int totalTriples = 0;
+  private int addedNodes = 0;
+  private int addedRelationships = 0;
+  private BatchInserter db;
   // <resource id, node id>: to keep track of inserted nodes
   private Map<String, Long> tmpIndex = new HashMap<>();
-  // <node id, labels>: to keep track of node's labels
-  private Map<Long, HashSet<Label>> labelsMap = new HashMap<>();
   // <node id, properties>: to keep track of node's properties
   private Map<Long, Map<String, Object>> propsMap = new HashMap<>();
 
@@ -180,21 +177,14 @@ public class Neo4jBatchHandler {
    * @return nodeId an automatically generated id once a node is stored in noe4j DB
    */
   private Long createNeo4jNode(Resource resource) {
-    Map<String, Object> props = new HashMap<String, Object>();
+    Map<String, Object> props = new HashMap<>();
     props.put(MID_PROPERTY, resource.getId());
     props.put(PREFIX_PROPERTY, resource.getPrefix());
     Long nodeId = db.createNode(props);
     propsMap.put(nodeId, props);
     tmpIndex.put(resource.getId(), nodeId);
     addedNodes++;
-    Label label = DynamicLabel.label("Entity");
-    HashSet<Label> labels = labelsMap.get(nodeId);
-    if (labels == null) {
-      labels = new HashSet<Label>();
-      labelsMap.put(nodeId, labels);
-    }
-    labels.add(label);
-    db.setNodeLabels(nodeId, labels.toArray(new Label[labels.size()]));
+    db.setNodeLabels(nodeId, DynamicLabel.label("Entity"));
     return nodeId;
   }
 
@@ -205,10 +195,9 @@ public class Neo4jBatchHandler {
    * @param subjectNodeId     subject node id
    * @param objectNodeId      object node id
    */
-  private void createNeo4jRelation(Resource predicateResource, long subjectNodeId,
-                                   long objectNodeId) {
+  private void createNeo4jRelation(Resource predicateResource, long subjectNodeId, long objectNodeId) {
     RelationshipType relType = DynamicRelationshipType.withName(predicateResource.getId());
-    Map<String, Object> props = new HashMap<String, Object>();
+    Map<String, Object> props = new HashMap<>();
     props.put(PREFIX_PROPERTY, predicateResource.getPrefix());
     db.createRelationship(subjectNodeId, objectNodeId, relType, props);
     addedRelationships++;
