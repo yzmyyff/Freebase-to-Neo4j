@@ -39,7 +39,7 @@ public class Main {
     //                + number_of_properties * 64
     // 按照估计公式 bytes_ needed = 46000000  * 15 + 595779207 * 34 + 46000000 * 64 = 23890493038 byte
     // ≈ 22.25 GiB
-    config.put("dbms.pagecache.memory", "25g");
+    config.put("dbms.pagecache.memory", "10g");
 
     try {
       db = BatchInserters.inserter(new File(databaseDir), config);
