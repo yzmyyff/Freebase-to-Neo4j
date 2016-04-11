@@ -22,4 +22,5 @@ It is a canonicalized and scaled down dump. It's format like **freebase/data/tut
 
             mvn package
 
-3. Run code by invoking the Main class and passing the path to Freebase dump as well as a directory to store Neo4j db
+3. Run Python code to generate nodes file and edges file. 
+4. Run jar to store nodes and edges files into Neo4j db.
