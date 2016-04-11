@@ -45,7 +45,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>main.java.de.mpii.d5.neo4j.Main</mainClass>
+                            <mainClass>com.pingan.yzmy.BatchInsertIntoNeo4j</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
